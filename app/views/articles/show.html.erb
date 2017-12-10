@@ -1,0 +1,56 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @article.title %>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @article.text %>
+</p>
+
+<h2>Pictures</h2>
+<% @article.pictures.each do |img| %>
+  <img height="200" width="200" src="<%= asset_path img.url %>" alt="<%= asset_path img.url %>" />
+<% end %>
+
+<% if can? :edit, @article %>
+	<h2>Add a picture:</h2>
+	<%= form_with(model: [ @article, @article.pictures.build ], local: true) do |form| %>
+	  <p>
+		<%= form.label :url %><br>
+		<%= form.text_field :url %>
+	  </p>
+	  <p>
+		<%= form.submit %>
+	  </p>
+	<% end %>
+<% end %>
+
+<h2>Comments</h2>
+<% @article.comments.each do |comment| %>
+  <p>
+    <strong>User <%= comment.user.id %>:</strong>
+    <%= comment.body %>
+  </p>
+<% end %>
+
+<% if user_signed_in? %>
+	<h2>Add a comment:</h2>
+	<%= form_with(model: [ @article, @article.comments.build ], local: true) do |form| %>
+	  <p>
+		<%= form.text_area :body %>
+	  </p>
+	  <p>
+		<%= form.submit %>
+	  </p>
+	<% end %>
+<% else %>
+	<%= link_to 'Sign in to add a comment', new_user_session_url %>
+<% end %>
+
+<% if can? :edit, @article %>
+	<%= link_to 'Edit', edit_article_path(@article) %> |
+<% end %>
+<%= link_to 'Back', articles_path %>
